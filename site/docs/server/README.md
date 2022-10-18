@@ -9,9 +9,9 @@ This page explains how to set up and use BlackLab Server.
 
 ## Basic installation, configuration
 
-::: tip Prefer Docker?
-We have an [experimental Docker image](https://github.com/INL/BlackLab#using-blacklab-with-docker) available. A more user-friendly guide for usiing Blacklab with Docker will be available when we release our official image.
-:::
+### Using Docker
+
+We have an [experimental Docker image](https://github.com/INL/BlackLab#using-blacklab-with-docker) available. A more user-friendly guide for using Blacklab with Docker will be available when we release our official image.
 
 ### Java JRE
 
