@@ -20,7 +20,7 @@ import nl.inl.blacklab.config.BLConfigIndexing;
 import nl.inl.blacklab.config.BlackLabConfig;
 import nl.inl.blacklab.exceptions.BlackLabRuntimeException;
 import nl.inl.blacklab.exceptions.ErrorOpeningIndex;
-import nl.inl.blacklab.index.DownloadCache;
+import nl.inl.util.DownloadCache;
 import nl.inl.blacklab.index.PluginManager;
 import nl.inl.blacklab.index.ZipHandleManager;
 import nl.inl.blacklab.indexers.config.ConfigInputFormat;
@@ -150,7 +150,6 @@ public final class BlackLab {
      * @param directory the index directory
      * @param create if true, create a new index even if one existed there
      * @param formatIdentifier default format to use
-     * @param indexTemplateFile (optional, legacy) index template file
      * @return index writer
      * @throws ErrorOpeningIndex if the index couldn't be opened
      */

@@ -30,7 +30,7 @@ import nl.inl.blacklab.exceptions.MaxDocsReached;
 import nl.inl.blacklab.index.DocIndexer;
 import nl.inl.blacklab.index.DocIndexerAbstract;
 import nl.inl.blacklab.index.DocumentFormats;
-import nl.inl.blacklab.index.DownloadCache;
+import nl.inl.util.DownloadCache;
 import nl.inl.blacklab.index.Indexer;
 import nl.inl.blacklab.index.annotated.AnnotatedFieldWriter;
 import nl.inl.blacklab.index.annotated.AnnotationWriter;
