@@ -31,9 +31,6 @@ public abstract class DocIndexerAbstract implements DocIndexer {
 
     private DocWriter docWriter;
 
-    /** Do we want to omit norms? (Default: yes) */
-    protected boolean omitNorms = true;
-
     /**
      * File we're currently parsing. This can be useful for storing the original
      * filename in the index.
@@ -113,19 +110,6 @@ public abstract class DocIndexerAbstract implements DocIndexer {
         default:
             throw new IllegalArgumentException("Unknown field type: " + type);
         }
-    }
-
-    /**
-     * Enables or disables norms. Norms are disabled by default.
-     *
-     * The method name was chosen to match Lucene's Field.setOmitNorms(). Norms are
-     * only required if you want to use document-length-normalized scoring.
-     *
-     * @param b if true, doesn't store norms; if false, does store norms
-     */
-    @Override
-    public void setOmitNorms(boolean b) {
-        omitNorms = b;
     }
 
     @Override
