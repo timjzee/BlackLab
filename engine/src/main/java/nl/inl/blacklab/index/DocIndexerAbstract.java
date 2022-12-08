@@ -102,18 +102,19 @@ public abstract class DocIndexerAbstract implements DocIndexer {
         this.documentName = documentName == null ? "?" : documentName;
     }
 
-    protected BLFieldType luceneTypeFromIndexMetadataType(FieldType type) {
-        switch (type) {
-        case NUMERIC:
-            throw new IllegalArgumentException("Numeric types should be indexed using IntField, etc.");
-        case TOKENIZED:
-            return getDocWriter().metadataFieldType(true);
-        case UNTOKENIZED:
-            return getDocWriter().metadataFieldType(false);
-        default:
-            throw new IllegalArgumentException("Unknown field type: " + type);
-        }
-    }
+    // moved to BlIndexObjectFactoryLucene
+//    protected BLFieldType luceneTypeFromIndexMetadataType(FieldType type) {
+//        switch (type) {
+//        case NUMERIC:
+//            throw new IllegalArgumentException("Numeric types should be indexed using IntField, etc.");
+//        case TOKENIZED:
+//            return getDocWriter().metadataFieldType(true);
+//        case UNTOKENIZED:
+//            return getDocWriter().metadataFieldType(false);
+//        default:
+//            throw new IllegalArgumentException("Unknown field type: " + type);
+//        }
+//    }
 
     /**
      * Enables or disables norms. Norms are disabled by default.
@@ -261,7 +262,7 @@ public abstract class DocIndexerAbstract implements DocIndexer {
         FieldType type = desc.type();
         if (type != FieldType.NUMERIC) {
             for (String value: values) {
-                currentDoc.addTextualMetadataField(name, value, luceneTypeFromIndexMetadataType(type));
+                currentDoc.addTextualMetadataField(name, value,  getDocWriter().indexWriter().indexObjectFactory().blFieldTypeFromMetadataFieldType(type));
             }
         }
         if (type == FieldType.NUMERIC) {

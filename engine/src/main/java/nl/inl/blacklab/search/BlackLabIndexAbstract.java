@@ -134,7 +134,7 @@ public abstract class BlackLabIndexAbstract implements BlackLabIndexWriter {
     private IndexSearcher indexSearcher;
 
     /**
-     * Directory where our index resides
+     * Directory where our index resides. May be null for already-opened IndexReader (Solr)
      */
     private final File indexLocation;
 
