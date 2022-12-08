@@ -41,27 +41,10 @@ import nl.inl.blacklab.searches.SearchEmpty;
 import nl.inl.util.VersionFile;
 import nl.inl.util.XmlHighlighter.UnbalancedTagsStrategy;
 
+/** Interface for reading/searching a BlackLab index. For writing, see {@link BlackLabIndexWriter}. */
 public interface BlackLabIndex extends AutoCloseable {
 
     String METADATA_FIELD_CONTENT_VIEWABLE = "contentViewable";
-
-    /**
-     * Should TokenStream payloads contain information about primary/secondary token values?
-     *
-     * These are indicators used to decide which value is the primary value that should be
-     * stored in the forward index so it can be used for concordances, sort, grouping, etc.
-     *
-     * Secondary values are not stored in the forward index. This might be synonyms or stemmed
-     * values.
-     *
-     * The indicator in the payload (if one was added, which we try to avoid if possible) should be
-     * skipped when using payloads.
-     *
-     * Used by the integrated index format.
-     *
-     * @return whether or not TokenStream payloads should include primary value indicators
-     */
-    boolean needsPrimaryValuePayloads();
 
     enum IndexType {
         EXTERNAL_FILES, // classic index with external forward index, etc.
@@ -308,6 +291,7 @@ public interface BlackLabIndex extends AutoCloseable {
 
     /**
      * Get the index directory.
+     * For some implementations this may be null!
      * 
      * @return index directory
      */
@@ -509,7 +493,6 @@ public interface BlackLabIndex extends AutoCloseable {
      * a document may be viewed when a contentViewable metadata field with a value
      * true is registered with either the document or with the index metadata.
      *
-     * @param indexMetadata our index metadata
      * @param document document we want to view
      * @return true iff the content from documents in the index may be viewed
      */

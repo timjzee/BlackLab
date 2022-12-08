@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
-import nl.inl.blacklab.contentstore.ContentStore;
+import nl.inl.blacklab.contentstore.TextContent;
 import nl.inl.blacklab.index.annotated.AnnotatedFieldWriter;
 import nl.inl.blacklab.search.BlackLabIndexWriter;
 
@@ -73,13 +73,13 @@ public interface DocWriter {
 
     Optional<Function<String, File>> linkedFileResolver();
 
-    /**
-     * Get the content store for the specified field.
-     * 
-     * @param captureContentFieldName field name
-     * @return content store
-     */
-    ContentStore contentStore(String captureContentFieldName);
+//    /**
+//     * Get the content store for the specified field.
+//     *
+//     * @param captureContentFieldName field name
+//     * @return content store
+//     */
+//    ContentStore contentStore(String captureContentFieldName);
 
     /**
      * Add a field with its annotations to the forward index
@@ -89,4 +89,21 @@ public interface DocWriter {
      */
     void addToForwardIndex(AnnotatedFieldWriter field, BLInputDocument currentDoc);
 
+
+    void storeInContentStore(BLInputDocument currentDoc, TextContent document, String contentIdFieldName, String contentStoreName);
+//    if (writer.indexWriter() instanceof BlackLabIndexIntegrated) {
+//        AnnotatedFieldsImpl annotatedFields = writer.indexWriter().metadata().annotatedFields();
+//        if (annotatedFields.exists(contentStoreName)) {
+//            annotatedFields.get(contentStoreName).setContentStore(true);
+//        }
+//
+//        String luceneFieldName = AnnotatedFieldNameUtil.contentStoreField(contentStoreName);
+//        BLFieldType fieldType = writer.indexWriter().indexObjectFactory().fieldTypeContentStore();
+//        currentDoc.addField(luceneFieldName, document.toString(), fieldType);
+//    } else {
+//        ContentStoreExternal contentStore = (ContentStoreExternal)writer.contentStore(contentStoreName);
+//        int contentId = contentStore.store(document);
+//        currentDoc.addStoredNumericField(contentIdFieldName, contentId, false);
+//    }
+//}
 }

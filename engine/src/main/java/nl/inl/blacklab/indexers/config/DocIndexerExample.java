@@ -168,7 +168,7 @@ public class DocIndexerExample extends DocIndexerBase {
     private void createAnnotatedFieldWriter(ConfigAnnotatedField fieldContents) {
         BlackLabIndexWriter indexWriter = getDocWriter().indexWriter();
         // Add the configured field to our index metadata
-        indexWriter.annotatedFields().addFromConfig(fieldContents);
+        indexWriter.metadata().annotatedFields().addFromConfig(fieldContents);
 
         // Create a AnnotatedFieldWriter for this field so we can index it
         Collection<ConfigAnnotation> annots = fieldContents.getAnnotations().values();

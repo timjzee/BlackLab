@@ -10,12 +10,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import nl.inl.blacklab.contentstore.ContentStoreExternal;
-import nl.inl.blacklab.contentstore.TextContent;
 import nl.inl.blacklab.index.annotated.AnnotatedFieldWriter;
-import nl.inl.blacklab.search.BlackLabIndexIntegrated;
 import nl.inl.blacklab.search.indexmetadata.AnnotatedFieldNameUtil;
-import nl.inl.blacklab.search.indexmetadata.AnnotatedFieldsImpl;
 import nl.inl.blacklab.search.indexmetadata.FieldType;
 import nl.inl.blacklab.search.indexmetadata.IndexMetadataWriter;
 import nl.inl.blacklab.search.indexmetadata.MetadataField;
@@ -124,23 +120,6 @@ public abstract class DocIndexerAbstract implements DocIndexer {
     @Override
     public List<String> getMetadataField(String name) {
         return metadataFieldValues.get(name);
-    }
-
-    public static void storeInContentStore(DocWriter writer, BLInputDocument currentDoc, TextContent document, String contentIdFieldName, String contentStoreName) {
-        if (writer.indexWriter() instanceof BlackLabIndexIntegrated) {
-            AnnotatedFieldsImpl annotatedFields = writer.indexWriter().metadata().annotatedFields();
-            if (annotatedFields.exists(contentStoreName)) {
-                annotatedFields.get(contentStoreName).setContentStore(true);
-            }
-
-            String luceneFieldName = AnnotatedFieldNameUtil.contentStoreField(contentStoreName);
-            BLFieldType fieldType = writer.indexWriter().indexObjectFactory().fieldTypeContentStore();
-            currentDoc.addField(luceneFieldName, document.toString(), fieldType);
-        } else {
-            ContentStoreExternal contentStore = (ContentStoreExternal)writer.contentStore(contentStoreName);
-            int contentId = contentStore.store(document);
-            currentDoc.addStoredNumericField(contentIdFieldName, contentId, false);
-        }
     }
 
     @Override

@@ -473,7 +473,7 @@ public abstract class DocIndexerBase extends DocIndexerAbstract {
         } else {
             contentIdFieldName = contentStoreName + "Cid";
         }
-        storeInContentStore(getDocWriter(), currentDoc, document, contentIdFieldName, contentStoreName);
+        getDocWriter().storeInContentStore(currentDoc, document, contentIdFieldName, contentStoreName);
     }
 
     /**
