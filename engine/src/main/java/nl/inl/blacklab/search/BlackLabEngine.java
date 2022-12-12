@@ -251,6 +251,10 @@ public final class BlackLabEngine implements AutoCloseable {
         }
     }
 
+    public BlackLabIndexWriter openForWriting(IndexReader reader, ConfigInputFormat format) throws ErrorOpeningIndex {
+        return new BlackLabIndexIntegrated(this, reader, null, true, false, format);
+    }
+
     /**
      * Return the current default index type, external or integrated
      * @return the default index type

@@ -8,6 +8,7 @@ import java.text.Collator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -157,7 +158,7 @@ public abstract class BlackLabIndexAbstract implements BlackLabIndexWriter {
     private boolean closed;
 
     /** Can be anything */
-    private Map<String, Object> userObjectMap;
+    private Map<String, Object> userObjectMap = new ConcurrentHashMap<>();
 
     // Constructors
     //---------------------------------------------------------------
@@ -185,6 +186,7 @@ public abstract class BlackLabIndexAbstract implements BlackLabIndexWriter {
         this.blackLab = blackLab;
         this.indexLocation = indexDir; // may be null for already-opened IndexReader (Solr)
         searchSettings = SearchSettings.defaults();
+        boolean solrMode = false;
         try {
             this.indexMode = indexMode;
 
@@ -198,8 +200,10 @@ public abstract class BlackLabIndexAbstract implements BlackLabIndexWriter {
                 throw new BlackLabRuntimeException("Cannot create new index, not in index mode");
 
             if (reader != null) {
-                if (indexMode)
-                    throw new IllegalArgumentException("indexMode must be false for already-opened IndexReader!");
+                // Only create analyzer if not in solr mode.
+                // indexModule == true && indexReader != null only ever happens in solr mode
+                // so if we're here, we're in solr mode, so do not create the analyzer.
+                if (indexMode) solrMode = true;
 
                 // We've been passed an already-opened IndexReader. Use that, don't open our own.
                 this.reader = reader;
@@ -219,8 +223,12 @@ public abstract class BlackLabIndexAbstract implements BlackLabIndexWriter {
             if (!indexMode)
                 indexMetadata.freeze();
 
-            finishOpeningIndex(indexDir, indexMode, createNewIndex);
-
+            // TODO abstract away this special solrMode parameter (which is used to avoid closing the reader if we're in solr mode)
+            // we should abstract out the creation of the objects that depend on the analyzer
+            // (such as the lucene writer) into the IndexObjectFactory
+            // so that we do not need this (ugly and brittle!) check here and can just call the function on whichever IndexObjectFactory
+            // we have and trust that it will do the right thing.
+            finishOpeningIndex(indexDir, createNewIndex, solrMode);
         } catch (IndexFormatTooNewException|IndexFormatTooOldException e) {
             throw new IndexVersionMismatch(e);
         } catch (IOException e) {
@@ -236,7 +244,7 @@ public abstract class BlackLabIndexAbstract implements BlackLabIndexWriter {
      * @throws IndexVersionMismatch if the index is too old or new
      */
     private void openIndex(boolean createNewIndex) throws IOException, IndexVersionMismatch {
-        checkCanOpenIndex(indexMode, createNewIndex);
+        checkCanOpenIndex(createNewIndex);
         if (traceIndexOpening())
             logger.debug("Constructing BlackLabIndex...");
         if (indexMode) {
@@ -343,7 +351,7 @@ public abstract class BlackLabIndexAbstract implements BlackLabIndexWriter {
                 // Index mode. Create new content store or open existing one.
                 try {
                     boolean createNewContentStore = isEmptyIndex;
-                    openContentStore(field, true, createNewContentStore, indexLocation);
+                    openContentStore(field, createNewContentStore, indexLocation);
                 } catch (ErrorOpeningIndex e) {
                     throw BlackLabRuntimeException.wrap(e);
                 }
@@ -418,7 +426,7 @@ public abstract class BlackLabIndexAbstract implements BlackLabIndexWriter {
         return fi.canDoNfaMatching();
     }
 
-    protected void checkCanOpenIndex(boolean indexMode, boolean createNewIndex) throws IllegalArgumentException {
+    protected void checkCanOpenIndex(boolean createNewIndex) throws IllegalArgumentException {
         // subclass can override this
     }
 
@@ -442,7 +450,8 @@ public abstract class BlackLabIndexAbstract implements BlackLabIndexWriter {
         }
     }
 
-    protected void finishOpeningIndex(File indexDir, boolean indexMode, boolean createNewIndex)
+    // TODO abstract away this special solrMode parameter (which is used to avoid closing the reader if we're in solr mode)
+    protected final void finishOpeningIndex(File indexDir, boolean createNewIndex, boolean solrMode)
             throws IOException, ErrorOpeningIndex {
         isEmptyIndex = indexMetadata.isNewIndex();
 
@@ -458,12 +467,13 @@ public abstract class BlackLabIndexAbstract implements BlackLabIndexWriter {
             // Re-open the IndexWriter with the analyzer we've created above (see comment above)
             if (traceIndexOpening())
                 logger.debug("  Re-opening IndexWriter with newly created analyzers...");
-            reader.close();
+            if (!solrMode) reader.close();
             indexWriter.close();
-            IndexWriter luceneIndexWriter = openIndexWriter(indexDir, createNewIndex, analyzer);
+            IndexWriter luceneIndexWriter = null;
+            if (!solrMode) luceneIndexWriter = openIndexWriter(indexDir, createNewIndex, analyzer);
             if (traceIndexOpening())
                 logger.debug("  IndexReader too...");
-            reader = DirectoryReader.open(luceneIndexWriter, false, false);
+            if (!solrMode) reader = DirectoryReader.open(luceneIndexWriter, false, false);
             indexWriter = indexObjectFactory().indexWriterProxy(luceneIndexWriter, this);
         }
 
@@ -488,7 +498,7 @@ public abstract class BlackLabIndexAbstract implements BlackLabIndexWriter {
                 logger.debug("  Opening content stores...");
             for (AnnotatedField field: indexMetadata.annotatedFields()) {
                 if (field.hasContentStore()) {
-                    openContentStore(field, indexMode, false, indexDir);
+                    openContentStore(field, false, indexDir);
                 }
             }
         }
@@ -582,7 +592,7 @@ public abstract class BlackLabIndexAbstract implements BlackLabIndexWriter {
         return reader;
     }
 
-    protected void openContentStore(Field field, boolean indexMode, boolean createNewContentStore, File indexDir) throws ErrorOpeningIndex {
+    protected void openContentStore(Field field, boolean createNewContentStore, File indexDir) throws ErrorOpeningIndex {
         ContentStore cs;
         if (this instanceof BlackLabIndexIntegrated) {
             String luceneField = AnnotatedFieldNameUtil.contentStoreField(field.name());

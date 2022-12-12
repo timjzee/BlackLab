@@ -3,7 +3,6 @@ package nl.inl.blacklab.search.indexmetadata;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -13,7 +12,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
@@ -140,8 +138,8 @@ public class IndexMetadataIntegrated implements IndexMetadataWriter {
                 String metadataJson = serializeToJson(metadata);
 
                 // Write debug files
-                File debugJackson = new File(indexWriter.indexDirectory(), "debug-metadata.json");
-                FileUtils.writeStringToFile(debugJackson, metadataJson, StandardCharsets.UTF_8);
+//                File debugJackson = new File(indexWriter.indexDirectory(), "debug-metadata.json");
+//                FileUtils.writeStringToFile(debugJackson, metadataJson, StandardCharsets.UTF_8);
 
                 // Create a metadata document with the metadata JSON, config format file,
                 // and a marker field to we can find it again
