@@ -124,7 +124,7 @@ public final class BlackLabEngine implements AutoCloseable {
      *
      * @param factory index object factory to use
      */
-    public void setIndexObjectFactor(BLIndexObjectFactory factory) {
+    public void setIndexObjectFactory(BLIndexObjectFactory factory) {
         this.indexObjectFactory = factory;
     }
 
@@ -153,7 +153,7 @@ public final class BlackLabEngine implements AutoCloseable {
         }
     }
 
-    public static BlackLabIndex indexFromReader(IndexReader reader, boolean wrapIfNotFound) {
+    public static BlackLabIndex indexFromReader(IndexReader reader, boolean wrapIfNotFound, boolean writeMode) {
         BlackLabEngine blackLabEngine;
         synchronized (indexReader2BlackLabEngine) {
             blackLabEngine = indexReader2BlackLabEngine.get(reader);
@@ -163,7 +163,7 @@ public final class BlackLabEngine implements AutoCloseable {
             // (used with Solr, who manages IndexReaders for us)
             blackLabEngine = BlackLab.implicitInstance();
         }
-        return blackLabEngine == null ? null : blackLabEngine.getIndexFromReader(reader, wrapIfNotFound);
+        return blackLabEngine == null ? null : blackLabEngine.getIndexFromReader(reader, wrapIfNotFound, writeMode);
     }
 
     /**
@@ -280,8 +280,8 @@ public final class BlackLabEngine implements AutoCloseable {
      * @param reader reader to wrap
      * @return a BlackLabIndex instance with this reader
      */
-    public BlackLabIndex wrapIndexReader(IndexReader reader) throws ErrorOpeningIndex {
-        return new BlackLabIndexIntegrated(this, reader, null, false, false,
+    public BlackLabIndex wrapIndexReader(IndexReader reader, boolean indexMode) throws ErrorOpeningIndex {
+        return new BlackLabIndexIntegrated(this, reader, null, indexMode, false,
                 null);
     }
 
@@ -433,19 +433,23 @@ public final class BlackLabEngine implements AutoCloseable {
      *                       existed yet. Used with Solr.
      * @return BlackLabIndex instance for this IndexReader
      */
-    synchronized BlackLabIndex getIndexFromReader(IndexReader reader, boolean wrapIfNotFound) {
+    synchronized BlackLabIndex getIndexFromReader(IndexReader reader, boolean wrapIfNotFound, boolean writeMode) {
         BlackLabIndex blackLabIndex = indexReader2BlackLabIndex.get(reader);
         if (blackLabIndex == null && wrapIfNotFound) {
             // We don't have a BlackLabIndex instance for this IndexReader yet. This can occur if e.g.
             // Solr is in charge of opening IndexReaders. Create a new instance now and register it.
             try {
-                blackLabIndex = wrapIndexReader(reader);
+                blackLabIndex = wrapIndexReader(reader, false);
                 registerIndex(reader, blackLabIndex);
             } catch (ErrorOpeningIndex e) {
                 throw new RuntimeException(e);
             }
         }
         return blackLabIndex;
+    }
+
+    synchronized  BlackLabIndexWriter openForWriting(IndexReader reader) throws ErrorOpeningIndex {
+        return (BlackLabIndexWriter) wrapIndexReader(reader, true);
     }
 
     public int maxThreadsPerSearch() {

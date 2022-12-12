@@ -3,16 +3,9 @@ package nl.inl.blacklab.index;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.IntPoint;
-import org.apache.lucene.document.NumericDocValuesField;
-import org.apache.lucene.document.SortedSetDocValuesField;
-import org.apache.lucene.document.StoredField;
 import org.apache.lucene.index.IndexableFieldType;
-import org.apache.lucene.util.BytesRef;
 import org.apache.solr.common.SolrInputDocument;
-import org.apache.solr.schema.TextField;
 
 /**
  * Class for a BlackLab document being indexed directly into Lucene.
@@ -20,7 +13,7 @@ import org.apache.solr.schema.TextField;
 public class BLInputDocumentSolr implements BLInputDocument {
 
     private final SolrInputDocument document;
-
+    
     public BLInputDocumentSolr() {
         document = new SolrInputDocument();
     }
@@ -30,24 +23,25 @@ public class BLInputDocumentSolr implements BLInputDocument {
     }
 
     public void addField(String name, String value, BLFieldType fieldType) {
-        document.addField(name, new TextField());
+        document.addField(name, value);
     }
 
-    public void addAnnotationField(String name, TokenStream tokenStream, BLFieldType fieldType) {
-        document.addField(new org.apache.lucene.document.StoredField(name, tokenStream));
-
-        document.add(new Field(name, tokenStream, luceneType(fieldType)));
+    public void addAnnotationField(String name, TokenStream tokenStream, BLFieldTypeLucene fieldType) {
+        Field f = new Field(name, tokenStream, fieldType.getLuceneFieldType());
+        document.addField(name, f);
     }
 
     public void addStoredNumericField(String name, int value, boolean addDocValue) {
-        document.add(new IntPoint(name, value));
-        document.add(new StoredField(name, value));
-        if (addDocValue)
-            document.add(new NumericDocValuesField(name, value));
+        document.addField(name, value);
     }
 
     public void addStoredField(String name, String value) {
-        document.add(new StoredField(name, value));
+        document.addField(name, value);
+    }
+
+    @Override
+    public void addAnnotationField(String name, TokenStream tokenStream, BLFieldType fieldType) {
+
     }
 
     public SolrInputDocument getDocument() {
@@ -56,7 +50,7 @@ public class BLInputDocumentSolr implements BLInputDocument {
 
     @Override
     public String get(String name) {
-        return document.get(name);
+        return document.getField(name).getValue().toString();
     }
 
     @Override
@@ -78,11 +72,12 @@ public class BLInputDocumentSolr implements BLInputDocument {
             }
         }
         // docvalues for efficient sorting/grouping
-        document.add(new SortedSetDocValuesField(name, new BytesRef(value)));
+        document.addField(name, value);
     }
 
     @Override
     public BLIndexObjectFactory indexObjectFactory() {
         return BLIndexObjectFactoryLucene.INSTANCE;
     }
+
 }

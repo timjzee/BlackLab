@@ -78,11 +78,6 @@ public class MockBlackLabIndex implements BlackLabIndex {
     }
 
     @Override
-    public boolean needsPrimaryValuePayloads() {
-        return false;
-    }
-
-    @Override
     public void close() {
         blackLab.removeIndex(this);
     }
@@ -259,6 +254,9 @@ public class MockBlackLabIndex implements BlackLabIndex {
     public ForwardIndexAccessor forwardIndexAccessor(String searchField) {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public Map<String, Object> getUserObjectMap() { return null; }
 
     @Override
     public Query getAllRealDocsQuery() {

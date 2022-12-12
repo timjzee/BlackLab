@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.text.Collator;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -500,4 +501,6 @@ public interface BlackLabIndex extends AutoCloseable {
             return Boolean.parseBoolean(document.get(METADATA_FIELD_CONTENT_VIEWABLE));
         return metadata().contentViewable();
     }
+
+    public Map<String, Object> getUserObjectMap();
 }

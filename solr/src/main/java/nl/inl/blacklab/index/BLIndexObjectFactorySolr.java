@@ -4,6 +4,8 @@ import org.apache.lucene.document.FieldType;
 import org.apache.lucene.index.IndexOptions;
 import org.apache.lucene.index.IndexWriter;
 
+import nl.inl.blacklab.search.BlackLabIndexWriter;
+
 /**
  * Factory for objects related to indexing directly to Lucene.
  *
@@ -29,23 +31,24 @@ public class BLIndexObjectFactorySolr implements BLIndexObjectFactory {
 
     private BLIndexObjectFactorySolr() {}
 
+    @Override
     public BLInputDocument createInputDocument() {
-        return new BLInputDocumentLucene();
+        return new BLInputDocumentSolr();
     }
 
     @Override
     public BLFieldType fieldTypeMetadata(boolean tokenized) {
-        return BLFieldTypeSolr.metadata(tokenized);
+        return BLFieldTypeLucene.metadata(tokenized);
     }
 
     @Override
     public BLFieldType fieldTypeContentStore() {
-        return BLFieldTypeSolr.contentStore();
+        return BLFieldTypeLucene.contentStore();
     }
 
     @Override
     public BLFieldType fieldTypeAnnotationSensitivity(boolean offsets, boolean forwardIndex) {
-        return BLFieldTypeSolr.annotationSensitivity(offsets, forwardIndex);
+        return BLFieldTypeLucene.annotationSensitivity(offsets, forwardIndex);
     }
 
     public BLFieldType fieldTypeIndexMetadataMarker() {
@@ -53,7 +56,7 @@ public class BLIndexObjectFactorySolr implements BLIndexObjectFactory {
     }
 
     @Override
-    public BLIndexWriterProxy indexWriterProxy(IndexWriter solrIndexWriter) {
-        return new BLIndexWriterProxySolr(solrIndexWriter);
+    public BLIndexWriterProxy indexWriterProxy(IndexWriter luceneIndexWriter, BlackLabIndexWriter indexWriter) {
+        return new BLIndexWriterProxySolr(indexWriter);
     }
 }

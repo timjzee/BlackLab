@@ -4,6 +4,8 @@ import org.apache.lucene.document.FieldType;
 import org.apache.lucene.index.IndexOptions;
 import org.apache.lucene.index.IndexWriter;
 
+import nl.inl.blacklab.search.BlackLabIndexWriter;
+
 /**
  * Factory for objects related to indexing directly to Lucene.
  *
@@ -29,6 +31,7 @@ class BLIndexObjectFactoryLucene implements BLIndexObjectFactory {
 
     private BLIndexObjectFactoryLucene() {}
 
+    @Override
     public BLInputDocument createInputDocument() {
         return new BLInputDocumentLucene();
     }
@@ -53,7 +56,7 @@ class BLIndexObjectFactoryLucene implements BLIndexObjectFactory {
     }
 
     @Override
-    public BLIndexWriterProxy indexWriterProxy(IndexWriter luceneIndexWriter) {
+    public BLIndexWriterProxy indexWriterProxy(IndexWriter luceneIndexWriter, BlackLabIndexWriter indexWriter) {
         return new BLIndexWriterProxyLucene(luceneIndexWriter);
     }
 }

@@ -56,6 +56,7 @@ public class TestIndexComponent {
 
 
     @Test
+    @Ignore
     public void testAddData() throws SolrServerException, IOException {
         ModifiableSolrParams solrParams = new ModifiableSolrParams();
         solrParams.add(CommonParams.Q, "*:*");

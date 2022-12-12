@@ -156,6 +156,8 @@ public abstract class BlackLabIndexAbstract implements BlackLabIndexWriter {
     /** Was this index closed? */
     private boolean closed;
 
+    /** Can be anything */
+    private Map<String, Object> userObjectMap;
 
     // Constructors
     //---------------------------------------------------------------
@@ -241,7 +243,7 @@ public abstract class BlackLabIndexAbstract implements BlackLabIndexWriter {
             if (traceIndexOpening())
                 logger.debug("  Opening IndexWriter...");
             IndexWriter luceneIndexWriter = openIndexWriter(indexLocation, createNewIndex, null);
-            indexWriter = indexObjectFactory().indexWriterProxy(luceneIndexWriter);
+            indexWriter = indexObjectFactory().indexWriterProxy(luceneIndexWriter, this);
             if (traceIndexOpening())
                 logger.debug("  Opening corresponding IndexReader...");
             reader = DirectoryReader.open(luceneIndexWriter, false, false);
@@ -462,7 +464,7 @@ public abstract class BlackLabIndexAbstract implements BlackLabIndexWriter {
             if (traceIndexOpening())
                 logger.debug("  IndexReader too...");
             reader = DirectoryReader.open(luceneIndexWriter, false, false);
-            indexWriter = indexObjectFactory().indexWriterProxy(luceneIndexWriter);
+            indexWriter = indexObjectFactory().indexWriterProxy(luceneIndexWriter, this);
         }
 
         // Register ourselves in the mapping from IndexReader to BlackLabIndex,
@@ -744,4 +746,8 @@ public abstract class BlackLabIndexAbstract implements BlackLabIndexWriter {
 
     protected abstract ForwardIndex createForwardIndex(AnnotatedField field);
 
+    @Override
+    public Map<String, Object> getUserObjectMap() {
+        return userObjectMap;
+    }
 }

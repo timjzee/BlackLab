@@ -150,7 +150,6 @@ public final class BlackLab {
      * @param directory the index directory
      * @param create if true, create a new index even if one existed there
      * @param formatIdentifier default format to use
-     * @param indexTemplateFile (optional, legacy) index template file
      * @return index writer
      * @throws ErrorOpeningIndex if the index couldn't be opened
      */
@@ -187,6 +186,10 @@ public final class BlackLab {
     public static BlackLabIndexWriter openForWriting(File directory, boolean create, String formatIdentifier,
             File indexTemplateFile, IndexType indexType) throws ErrorOpeningIndex {
         return implicitInstance().openForWriting(directory, create, formatIdentifier, indexTemplateFile, indexType);
+    }
+
+    public static BlackLabIndexWriter openForWriting(IndexReader reader) throws ErrorOpeningIndex {
+        return (BlackLabIndexWriter) implicitInstance.wrapIndexReader(reader, true);
     }
 
     /**
@@ -237,7 +240,7 @@ public final class BlackLab {
      * @return BlackLab index object
      */
     public static synchronized BlackLabIndex indexFromReader(IndexReader reader, boolean wrapIfNotFound) {
-        return BlackLabEngine.indexFromReader(reader, wrapIfNotFound);
+        return BlackLabEngine.indexFromReader(reader, wrapIfNotFound, false);
     }
 
     /**

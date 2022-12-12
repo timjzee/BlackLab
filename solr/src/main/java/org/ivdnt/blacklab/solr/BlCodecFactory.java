@@ -5,7 +5,7 @@ import org.apache.solr.core.CodecFactory;
 
 import nl.inl.blacklab.codec.BlackLab40Codec;
 
-public class BlCodecFactory extends CodecFactory {
+public class BLCodecFactory extends CodecFactory {
 
     @Override
     public Codec getCodec() {

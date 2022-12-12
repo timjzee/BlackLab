@@ -20,7 +20,6 @@ import org.apache.solr.response.SolrQueryResponse;
 import org.apache.solr.update.AddUpdateCommand;
 import org.apache.solr.update.processor.UpdateRequestProcessor;
 
-import nl.inl.blacklab.contentstore.ContentStoreIntegrated.ContentStore;
 import nl.inl.blacklab.index.BLIndexObjectFactorySolr;
 import nl.inl.blacklab.index.Indexer;
 import nl.inl.blacklab.indexers.config.ConfigInputFormat;
@@ -28,7 +27,7 @@ import nl.inl.blacklab.indexers.config.DocIndexerXPath;
 import nl.inl.blacklab.search.BlackLab;
 import nl.inl.blacklab.search.BlackLabIndexWriter;
 
-public class BlSolrXMLLoader extends ContentStreamLoader {
+public class BLSolrXMLLoader extends ContentStreamLoader {
 
     @Override
     public void load(SolrQueryRequest req, SolrQueryResponse rsp, ContentStream stream, UpdateRequestProcessor processor) throws Exception {
@@ -36,17 +35,14 @@ public class BlSolrXMLLoader extends ContentStreamLoader {
 
         final String charset = ContentStreamBase.getCharsetFromContentType(stream.getContentType());
 
-        processor.processAdd();
 
         SolrParams params = req.getParams();
         IndexReader reader = req.getSearcher().getIndexReader();
 
         processor.processAdd(new AddUpdateCommand(req));
-        BlackLab.indexFromReader(reader, true);
-        BlackLabIndexWriter index = BlackLab.writerFromReader(reader);
+        BlackLabIndexWriter index = BlackLab.openForWriting(reader);
 
-
-        Indexer.get(index, params.get("bl.format"));
+        Indexer indexer = Indexer.get(index, params.get("bl.format"));
 
         InputStream is = stream.getStream();
         indexer.index(stream.getName(), is);

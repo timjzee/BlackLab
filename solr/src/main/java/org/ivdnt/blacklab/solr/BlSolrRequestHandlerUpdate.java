@@ -7,7 +7,7 @@ import org.apache.solr.common.util.NamedList;
 import org.apache.solr.handler.UpdateRequestHandler;
 import org.apache.solr.handler.loader.ContentStreamLoader;
 
-public class BlSolrRequestHandlerUpdate extends UpdateRequestHandler {
+public class BLSolrRequestHandlerUpdate extends UpdateRequestHandler {
 
     @Override
     protected Map<String, ContentStreamLoader> createDefaultLoaders(NamedList args) {
@@ -16,7 +16,7 @@ public class BlSolrRequestHandlerUpdate extends UpdateRequestHandler {
             p = args.toSolrParams();
         }
         Map<String, ContentStreamLoader> registry = super.createDefaultLoaders(args);
-        registry.put("application/xml", new BlSolrXMLLoader().init(p) );
+        registry.put("application/xml", new BLSolrXMLLoader().init(p) );
         registry.put("text/xml", registry.get("application/xml") );
         return registry;
     }
