@@ -42,14 +42,14 @@ public class BLSolrXMLLoader extends ContentStreamLoader {
         // perhaps move this test?
         DocumentFormats.registerFormatsInDirectories(List.of(Paths.get("..", "test", "data").toFile()));
         ConfigInputFormat format = DocumentFormats.getConfigInputFormat(params.get("bl.format"));
-        BlackLabIndexWriter index = BlackLab.implicitInstance().openForWriting(reader, format);
-        Indexer indexer = Indexer.get(index, params.get("bl.format"));
-        index.getUserObjectMap().put("solrqueryrequest", req);
-        index.getUserObjectMap().put("updaterequestprocessor", processor);
+        try (BlackLabIndexWriter index = BlackLab.implicitInstance().openForWriting(reader, format)) {
+            Indexer indexer = Indexer.get(index, params.get("bl.format"));
+            index.getUserObjectMap().put("solrqueryrequest", req);
+            index.getUserObjectMap().put("updaterequestprocessor", processor);
 
-
-        InputStream is = stream.getStream();
-        indexer.index(stream.getName(), is);
-        IOUtils.closeQuietly(is);
+            InputStream is = stream.getStream();
+            indexer.index(stream.getName(), is);
+            IOUtils.closeQuietly(is);
+        }
     }
 }

@@ -16,6 +16,7 @@ import org.apache.lucene.index.IndexReader;
 
 import nl.inl.blacklab.exceptions.ErrorOpeningIndex;
 import nl.inl.blacklab.index.BLIndexObjectFactory;
+import nl.inl.blacklab.index.BLIndexObjectFactoryLucene;
 import nl.inl.blacklab.index.DocumentFormats;
 import nl.inl.blacklab.indexers.config.ConfigInputFormat;
 import nl.inl.blacklab.search.BlackLabIndex.IndexType;
@@ -79,7 +80,7 @@ public final class BlackLabEngine implements AutoCloseable {
     private final AtomicInteger threadCounter = new AtomicInteger(1);
 
     /** How to create indexing objects. By default, use the "direct to Lucene" implementation. */
-    private BLIndexObjectFactory indexObjectFactory = BLIndexObjectFactory.get(false);
+    private BLIndexObjectFactory indexObjectFactory = BLIndexObjectFactoryLucene.INSTANCE;
 
     /** Was close() called on this engine? */
     private boolean wasClosed;
@@ -116,8 +117,7 @@ public final class BlackLabEngine implements AutoCloseable {
      * Set the index object factory to use.
      *
      * Use this to indicate whether we're indexing directly to Lucene (default)
-     * or via Solr. Use {@link BLIndexObjectFactory#get(boolean)} to get the appropriate
-     * implementation.
+     * or via Solr.
      *
      * CAUTION: call this once, before doing anything else with this engine, or
      * unpredictable behaviour may result!

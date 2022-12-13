@@ -11,10 +11,6 @@ import nl.inl.blacklab.search.indexmetadata.FieldType;
  * Specifically, returns instances of BLInputDocument and BLFieldType.
  */
 public interface BLIndexObjectFactory {
-    static BLIndexObjectFactory get(boolean runningFromSolr) {
-         return runningFromSolr ? null/*BLIndexObjectFactorySolr.INSTANCE*/ : BLIndexObjectFactoryLucene.INSTANCE;
-    }
-
     BLInputDocument createInputDocument();
 
     BLFieldType fieldTypeMetadata(boolean tokenized);

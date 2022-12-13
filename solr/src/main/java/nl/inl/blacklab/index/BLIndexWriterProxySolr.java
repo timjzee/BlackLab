@@ -15,7 +15,7 @@ import org.apache.solr.update.processor.UpdateRequestProcessor;
 import nl.inl.blacklab.search.BlackLabIndexWriter;
 
 /**
- * Simple proxy for Lucene IndexWriter.
+ * Simple proxy for Solr IndexWriter.
  */
 public class BLIndexWriterProxySolr implements BLIndexWriterProxy, Closeable {
     SolrQueryRequest request;

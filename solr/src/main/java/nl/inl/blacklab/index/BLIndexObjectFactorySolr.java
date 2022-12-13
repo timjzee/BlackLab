@@ -7,9 +7,7 @@ import org.apache.lucene.index.IndexWriter;
 import nl.inl.blacklab.search.BlackLabIndexWriter;
 
 /**
- * Factory for objects related to indexing directly to Lucene.
- *
- * Specifically, returns instances of BLInputDocumentLucene and BLFieldTypeLucene.
+ * Factory for objects related to indexing to Solr.
  */
 public class BLIndexObjectFactorySolr implements BLIndexObjectFactory {
     public static BLIndexObjectFactorySolr INSTANCE = new BLIndexObjectFactorySolr();

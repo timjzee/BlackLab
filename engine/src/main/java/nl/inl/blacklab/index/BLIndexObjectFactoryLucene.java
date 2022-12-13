@@ -11,7 +11,7 @@ import nl.inl.blacklab.search.BlackLabIndexWriter;
  *
  * Specifically, returns instances of BLInputDocumentLucene and BLFieldTypeLucene.
  */
-class BLIndexObjectFactoryLucene implements BLIndexObjectFactory {
+public class BLIndexObjectFactoryLucene implements BLIndexObjectFactory {
     public static BLIndexObjectFactoryLucene INSTANCE = new BLIndexObjectFactoryLucene();
 
     private static BLFieldTypeLucene indexMetadataMarkerFieldType;
