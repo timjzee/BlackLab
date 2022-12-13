@@ -746,6 +746,8 @@ public abstract class BlackLabIndexAbstract implements BlackLabIndexWriter, Blac
 
     @Override
     public ContentStore contentStore(Field field) {
-        return contentStores.contentAccessor(field).getContentStore();
+        // since this function is in writer, we're in write mode.
+        // (TODO: split reader and writer implementations, do not have a class that does both!)
+        return contentAccessor(field).getContentStore();
     }
 }

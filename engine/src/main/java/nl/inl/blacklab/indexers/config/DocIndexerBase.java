@@ -144,7 +144,7 @@ public abstract class DocIndexerBase extends DocIndexerAbstract {
     protected void addAnnotatedField(AnnotatedFieldWriter field) {
         annotatedFields.put(field.name(), field);
         if (getDocWriter() != null) {
-            IndexMetadataWriter indexMetadata = getDocWriter().indexWriter().metadata();
+            IndexMetadataWriter indexMetadata = getDocWriter().metadata();
             indexMetadata.registerAnnotatedField(field);
         }
     }
@@ -689,7 +689,6 @@ public abstract class DocIndexerBase extends DocIndexerAbstract {
      * @return true if dashes should be sanitized from annotation names
      */
     protected boolean disallowDashInname() {
-        return !(getDocWriter().indexWriter() instanceof BlackLabIndexIntegrated);
+        return !(getDocWriter() instanceof BlackLabIndexIntegrated);
     }
-
 }

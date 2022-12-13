@@ -67,6 +67,7 @@ public class BlackLabIndexExternal extends BlackLabIndexAbstract {
         return new ForwardIndexExternal(this, field);
     }
 
+    @Override
     protected void deleteFromForwardIndices(Document d) {
         // Delete this document in all forward indices
         for (Map.Entry<AnnotatedField, ForwardIndex> e: forwardIndices.entrySet()) {
@@ -79,6 +80,7 @@ public class BlackLabIndexExternal extends BlackLabIndexAbstract {
         }
     }
 
+    @Override
     protected void checkCanOpenIndex(boolean indexMode, boolean createNewIndex) throws IllegalArgumentException {
         // If there's a version file (non-integrated index), check it now.
         File indexLocation = indexDirectory();

@@ -64,6 +64,8 @@ public class AnnotatedFieldWriter {
 
     /**
      * Construct a AnnotatedFieldWriter object with a main annotation.
+     * You may construct this directly, but usually construction will happen through {@link nl.inl.blacklab.index.BLIndexObjectFactory},
+     * as this class needs to (indirectly) know whether the index is integrated or external, and we abstract this away through that class.
      *
      * NOTE: right now, the main annotation will always have a forward index.
      * Maybe make this configurable?

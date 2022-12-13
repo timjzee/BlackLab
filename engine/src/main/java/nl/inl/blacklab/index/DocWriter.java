@@ -9,20 +9,25 @@ import java.util.function.Function;
 import nl.inl.blacklab.contentstore.TextContent;
 import nl.inl.blacklab.index.annotated.AnnotatedFieldWriter;
 import nl.inl.blacklab.search.BlackLabIndexWriter;
+import nl.inl.blacklab.search.indexmetadata.IndexMetadataWriter;
 
 /**
  * Interface the DocIndexer gets to store documents.
  */
 public interface DocWriter {
 
-    /**
-     * Get the general index writer object.
-     * 
-     * Not sure if this method is needed; we probably want to see if we can leave it out.
-     *   
-     * @return writer
-     */
-    BlackLabIndexWriter indexWriter();
+//    /**
+//     * Get the general index writer object.
+//     *
+//     * Not sure if this method is needed; we probably want to see if we can leave it out.
+//     *
+//     * @return writer
+//     */
+//    BlackLabIndexWriter indexWriter();
+
+    IndexMetadataWriter metadata();
+
+    BLIndexObjectFactory indexObjectFactory();
     
     /**
      * Add a Lucene document to the index
@@ -106,4 +111,6 @@ public interface DocWriter {
 //        currentDoc.addStoredNumericField(contentIdFieldName, contentId, false);
 //    }
 //}
+
+    boolean needsPrimaryValuePayloads();
 }

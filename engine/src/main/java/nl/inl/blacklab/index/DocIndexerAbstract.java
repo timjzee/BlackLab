@@ -136,7 +136,7 @@ public abstract class DocIndexerAbstract implements DocIndexer {
         value = value.trim();
         if (!value.isEmpty()) {
             metadataFieldValues.computeIfAbsent(name, __ -> new ArrayList<>()).add(value);
-            IndexMetadataWriter indexMetadata = getDocWriter().indexWriter().metadata();
+            IndexMetadataWriter indexMetadata = getDocWriter().metadata();
             indexMetadata.registerMetadataField(name);
         }
     }
@@ -164,7 +164,7 @@ public abstract class DocIndexerAbstract implements DocIndexer {
     @Override
     public void addMetadataToDocument() {
         // See what metadatafields are missing or empty and add unknown value if desired.
-        IndexMetadataWriter indexMetadata = getDocWriter().indexWriter().metadata();
+        IndexMetadataWriter indexMetadata = getDocWriter().metadata();
         Map<String, String> unknownValuesToUse = new HashMap<>();
         List<String> fields = indexMetadata.metadataFields().names();
         for (String field: fields) {
@@ -213,7 +213,7 @@ public abstract class DocIndexerAbstract implements DocIndexer {
     }
 
     public void addMetadataFieldToDocument(String name, List<String> values) {
-        IndexMetadataWriter indexMetadata = getDocWriter().indexWriter().metadata();
+        IndexMetadataWriter indexMetadata = getDocWriter().metadata();
         //indexMetadata.registerMetadataField(name);
 
         MetadataFieldImpl desc = (MetadataFieldImpl) indexMetadata.metadataFields().get(name);
@@ -295,6 +295,6 @@ public abstract class DocIndexerAbstract implements DocIndexer {
     }
 
     protected BLInputDocument createNewDocument() {
-        return getDocWriter().indexWriter().indexObjectFactory().createInputDocument();
+        return getDocWriter().indexObjectFactory().createInputDocument();
     }
 }

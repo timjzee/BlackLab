@@ -32,10 +32,12 @@ import nl.inl.blacklab.index.annotated.AnnotatedFieldWriter;
 import nl.inl.blacklab.index.annotated.AnnotationWriter;
 import nl.inl.blacklab.search.BlackLab;
 import nl.inl.blacklab.search.BlackLabIndexWriter;
+import nl.inl.blacklab.search.ContentAccessor;
 import nl.inl.blacklab.search.indexmetadata.AnnotatedFieldNameUtil;
 import nl.inl.blacklab.search.indexmetadata.AnnotatedFieldsImpl;
 import nl.inl.blacklab.search.indexmetadata.Annotation;
 import nl.inl.blacklab.search.indexmetadata.Field;
+import nl.inl.blacklab.search.indexmetadata.IndexMetadataWriter;
 import nl.inl.util.FileProcessor;
 import nl.inl.util.FileUtil;
 import nl.inl.util.UnicodeStream;
@@ -433,12 +435,13 @@ class IndexerImpl implements DocWriter, Indexer {
     public void storeInContentStore(BLInputDocument currentDoc, TextContent document, String contentIdFieldName,
             String contentStoreName) {
 
-        Field field = indexWriter.metadata().annotatedField(contentIdFieldName);
-        if (field == null) field = indexWriter.metadata().metadataField(contentIdFieldName);
+        Field field = indexWriter.metadata().annotatedField(contentStoreName);
+        if (field == null) field = indexWriter.metadata().metadataField(contentStoreName);
 
         // TODO move store function into ContentStore
         // this will require moving ContentStore into engine module so it can see BlInputDocument class.
         ContentStore store = indexWriter.contentStore(field);
+
         if (store instanceof ContentStoreIntegrated) {
             AnnotatedFieldsImpl annotatedFields = indexWriter.metadata().annotatedFields();
             if (annotatedFields.exists(contentStoreName)) {
@@ -537,7 +540,7 @@ class IndexerImpl implements DocWriter, Indexer {
 //     */
 
 //    @Override
-//    public ContentStore contentStore(String fieldName) {
+//    private ContentStore contentStore(String fieldName) {
 //        ContentAccessor contentAccessor = indexWriter.contentAccessor(indexWriter.field(fieldName));
 //        if (contentAccessor == null)
 //            return null;
@@ -619,5 +622,20 @@ class IndexerImpl implements DocWriter, Indexer {
             logger.info("Threaded indexing is disabled for format " + formatIdentifier);
             this.numberOfThreadsToUse = 1;
         }
+    }
+
+    @Override
+    public IndexMetadataWriter metadata() {
+        return indexWriter.metadata();
+    }
+
+    @Override
+    public BLIndexObjectFactory indexObjectFactory() {
+        return indexWriter.indexObjectFactory();
+    }
+
+    @Override
+    public boolean needsPrimaryValuePayloads() {
+        return indexWriter.needsPrimaryValuePayloads();
     }
 }
