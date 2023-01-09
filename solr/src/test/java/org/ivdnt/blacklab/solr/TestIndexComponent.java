@@ -37,8 +37,8 @@ public class TestIndexComponent {
         Path resourcePath = Paths.get("src", "test", "resources", "solrDir");
         Path confTemplatePath = resourcePath.resolve("conf");
 
-        // Create srver, core and add document
-        SolrTestServer.createEmbeddedServer(CORE_NAME, resourcePath);
+        // Create server, core and add document
+        SolrTestServer.createEmbeddedServer(CORE_NAME, resourcePath, null);
         SolrTestServer.setLogLevel("WARN"); // show log messages
         SolrTestServer.createCore(CORE_NAME, confTemplatePath);
 
