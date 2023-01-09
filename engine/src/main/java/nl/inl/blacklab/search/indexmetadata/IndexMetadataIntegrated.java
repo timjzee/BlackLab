@@ -294,8 +294,8 @@ public class IndexMetadataIntegrated implements IndexMetadataWriter {
             populateFromConfig(config, dir);
 
         documentFormatConfigFileContents = config == null ? "(no config)" : config.getOriginalFileContents();
-        if (index.indexMode())
-            save(); // save debug file if any
+//        if (index.indexMode())
+//            save(); // save debug file if any
 
         // For integrated index, because metadata wasn't allowed to change during indexing,
         // return a default field config if you try to get a missing field.

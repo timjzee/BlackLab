@@ -33,6 +33,7 @@ public class BLSolrXMLLoader extends ContentStreamLoader {
         // find the directory
         SolrParams params = req.getParams();
         IndexReader reader = req.getSearcher().getIndexReader();
+        String indexName = req.getCore().getName();
 
 //        BlackLabIndexWriter index = BlackLab.openForWriting(new File(req.getCore().getIndexDir()), false, params.get("bl.format"), null,
 //                BlackLabIndex.IndexType.INTEGRATED);
@@ -42,7 +43,8 @@ public class BLSolrXMLLoader extends ContentStreamLoader {
         // perhaps move this test?
         DocumentFormats.registerFormatsInDirectories(List.of(Paths.get("..", "test", "data").toFile()));
         ConfigInputFormat format = DocumentFormats.getConfigInputFormat(params.get("bl.format"));
-        try (BlackLabIndexWriter index = BlackLab.implicitInstance().openForWriting(reader, format)) {
+
+        try (BlackLabIndexWriter index = BlackLab.implicitInstance().openForWriting(indexName, reader, format)) {
             Indexer indexer = Indexer.get(index, params.get("bl.format"));
             index.getUserObjectMap().put("solrqueryrequest", req);
             index.getUserObjectMap().put("updaterequestprocessor", processor);

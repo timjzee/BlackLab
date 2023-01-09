@@ -69,6 +69,7 @@ public class TestIndexComponent {
 
 
 
+
         Path path = Paths.get("..", "test", "data", "input", "PBsve430.xml");
         path = path.toAbsolutePath();
         String content = Files.readString(path);

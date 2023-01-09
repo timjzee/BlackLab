@@ -140,6 +140,11 @@ public abstract class BlackLabIndexAbstract implements BlackLabIndexWriter, Blac
     private final File indexLocation;
 
     /**
+     * Name of the index.
+     */
+    private final String name;
+
+    /**
      * If true, we've just created a new index. New indices cannot be searched, only
      * added to.
      */
@@ -167,6 +172,7 @@ public abstract class BlackLabIndexAbstract implements BlackLabIndexWriter, Blac
     /**
      * Open an index.
      *
+     * @param name name of the index
      * @param blackLab BlackLab engine
      * @param reader if non-null: use this already-opened IndexReader. indexMode must be false in this case.
      *               Used with Solr.
@@ -181,10 +187,11 @@ public abstract class BlackLabIndexAbstract implements BlackLabIndexWriter, Blac
      * @throws IndexVersionMismatch if the index is too old or too new to be opened by this BlackLab version
      * @throws ErrorOpeningIndex if the index couldn't be opened
      */
-    BlackLabIndexAbstract(BlackLabEngine blackLab, IndexReader reader, File indexDir, boolean indexMode, boolean createNewIndex,
+    BlackLabIndexAbstract(String name, BlackLabEngine blackLab, IndexReader reader, File indexDir, boolean indexMode, boolean createNewIndex,
             ConfigInputFormat config, File indexTemplateFile) throws ErrorOpeningIndex {
         this.blackLab = blackLab;
         this.indexLocation = indexDir; // may be null for already-opened IndexReader (Solr)
+        this.name = name;
         searchSettings = SearchSettings.defaults();
         boolean solrMode = false;
         try {
@@ -464,17 +471,24 @@ public abstract class BlackLabIndexAbstract implements BlackLabIndexWriter, Blac
         createAnalyzers();
 
         if (indexMode) {
-            // Re-open the IndexWriter with the analyzer we've created above (see comment above)
-            if (traceIndexOpening())
-                logger.debug("  Re-opening IndexWriter with newly created analyzers...");
-            if (!solrMode) reader.close();
-            indexWriter.close();
-            IndexWriter luceneIndexWriter = null;
-            if (!solrMode) luceneIndexWriter = openIndexWriter(indexDir, createNewIndex, analyzer);
-            if (traceIndexOpening())
-                logger.debug("  IndexReader too...");
-            if (!solrMode) reader = DirectoryReader.open(luceneIndexWriter, false, false);
-            indexWriter = indexObjectFactory().indexWriterProxy(luceneIndexWriter, this);
+            if (!solrMode) {
+                if (indexWriter == null) throw new RuntimeException("When not in solr mode, there must always be an indexWriter when in indexMode.");
+                // Re-open the IndexWriter with the analyzer we've created above (see comment above)
+                if (traceIndexOpening())
+                    logger.debug("  Re-opening IndexWriter with newly created analyzers...");
+                reader.close();
+                indexWriter.close();
+                IndexWriter luceneIndexWriter = openIndexWriter(indexDir, createNewIndex, analyzer);
+                if (traceIndexOpening())
+                    logger.debug("  IndexReader too...");
+                reader = DirectoryReader.open(luceneIndexWriter, false, false);
+                indexWriter = indexObjectFactory().indexWriterProxy(luceneIndexWriter, this);
+            } else {
+                // solr indexWriter doesn't require a lucene indexWriter, so pass null.
+                // TODO refactor this so that all lucene/solr specific code resides in lucene/solr specific classes
+                // the BlackLabIndex shouldn't have to be aware of the underlying implementation.
+                indexWriter = indexObjectFactory().indexWriterProxy(null, this);
+            }
         }
 
         // Register ourselves in the mapping from IndexReader to BlackLabIndex,
@@ -624,7 +638,7 @@ public abstract class BlackLabIndexAbstract implements BlackLabIndexWriter, Blac
 
     @Override
     public String name() {
-        return indexLocation.toString();
+        return name;
     }
 
     @Override

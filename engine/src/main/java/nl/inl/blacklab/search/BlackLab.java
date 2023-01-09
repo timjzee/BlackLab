@@ -188,8 +188,8 @@ public final class BlackLab {
         return implicitInstance().openForWriting(directory, create, formatIdentifier, indexTemplateFile, indexType);
     }
 
-    public static BlackLabIndexWriter openForWriting(IndexReader reader) throws ErrorOpeningIndex {
-        return (BlackLabIndexWriter) implicitInstance.wrapIndexReader(reader, true);
+    public static BlackLabIndexWriter openForWriting(String indexName, IndexReader reader) throws ErrorOpeningIndex {
+        return (BlackLabIndexWriter) implicitInstance.wrapIndexReader(indexName, reader, true);
     }
 
     /**
@@ -239,8 +239,8 @@ public final class BlackLab {
      * @param reader index reader that was opened using BlackLab
      * @return BlackLab index object
      */
-    public static synchronized BlackLabIndex indexFromReader(IndexReader reader, boolean wrapIfNotFound) {
-        return BlackLabEngine.indexFromReader(reader, wrapIfNotFound, false);
+    public static synchronized BlackLabIndex indexFromReader(String indexName, IndexReader reader, boolean wrapIfNotFound) {
+        return BlackLabEngine.indexFromReader(indexName, reader, wrapIfNotFound, false);
     }
 
     /**

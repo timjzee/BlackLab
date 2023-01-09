@@ -225,7 +225,7 @@ public abstract class DocIndexerAbstract implements DocIndexer {
         FieldType type = desc.type();
         if (type != FieldType.NUMERIC) {
             for (String value: values) {
-                currentDoc.addTextualMetadataField(name, value,  getDocWriter().indexWriter().indexObjectFactory().blFieldTypeFromMetadataFieldType(type));
+                currentDoc.addTextualMetadataField(name, value,  getDocWriter().indexObjectFactory().blFieldTypeFromMetadataFieldType(type));
             }
         }
         if (type == FieldType.NUMERIC) {

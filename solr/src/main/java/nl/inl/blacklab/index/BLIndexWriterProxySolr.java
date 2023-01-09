@@ -23,16 +23,23 @@ public class BLIndexWriterProxySolr implements BLIndexWriterProxy, Closeable {
     BlackLabIndexWriter writer;
 
     BLIndexWriterProxySolr(BlackLabIndexWriter writer) {
+        this.writer = writer;
+    }
+
+    private void ensureInitialized() {
         this.request = (SolrQueryRequest) writer.getUserObjectMap().get("solrqueryrequest");
         this.next = (UpdateRequestProcessor) writer.getUserObjectMap().get("updaterequestprocessor");
-        this.writer = writer;
     }
 
     @Override
     public void addDocument(BLInputDocument document) throws IOException {
+        ensureInitialized();
+
         AddUpdateCommand cmd = new AddUpdateCommand(null);
         cmd.solrDoc = ((BLInputDocumentSolr) document).getDocument();
         cmd.overwrite = true;
+        cmd.setReq(request);
+
         next.processAdd(cmd);
     }
 
@@ -58,12 +65,16 @@ public class BLIndexWriterProxySolr implements BLIndexWriterProxy, Closeable {
 
     @Override
     public void deleteDocuments(Query q) throws IOException {
+        ensureInitialized();
+
         DeleteUpdateCommand cmd = new DeleteUpdateCommand(request);
         next.processDelete(cmd);
     }
 
     @Override
     public long updateDocument(Term term, BLInputDocument document) throws IOException {
+        ensureInitialized();
+
         AddUpdateCommand cmd = new AddUpdateCommand(null);
         cmd.solrDoc = ((BLInputDocumentSolr) document).getDocument();
         cmd.overwrite = true;

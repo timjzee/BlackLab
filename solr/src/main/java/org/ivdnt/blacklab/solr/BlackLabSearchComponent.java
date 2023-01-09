@@ -127,7 +127,8 @@ public class BlackLabSearchComponent extends SearchComponent implements SolrCore
         boolean shouldRun = rb.req.getParams().getBool("bl", false);
         if (shouldRun) {
             IndexReader reader = rb.req.getSearcher().getIndexReader();
-            BlackLabIndex index = BlackLab.indexFromReader(reader, true);
+            String indexName = rb.req.getSearcher().getCore().getName();
+            BlackLabIndex index = BlackLab.indexFromReader(indexName, reader, true);
             WebserviceParamsSolr solrParams = new WebserviceParamsSolr(rb, index);
             WebserviceParams params = WebserviceParamsImpl.get(false, true,
                     solrParams);

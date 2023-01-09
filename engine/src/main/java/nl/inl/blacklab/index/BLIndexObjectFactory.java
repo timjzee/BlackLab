@@ -2,9 +2,8 @@ package nl.inl.blacklab.index;
 
 import org.apache.lucene.index.IndexWriter;
 
-import nl.inl.blacklab.index.annotated.AnnotatedFieldWriter;
-import nl.inl.blacklab.index.annotated.AnnotationSensitivities;
-import nl.inl.blacklab.search.indexmetadata.AnnotationSensitivity;
+import nl.inl.blacklab.search.BlackLabIndexWriter;
+import nl.inl.blacklab.search.indexmetadata.FieldType;
 
 /**
  * Factory object for objects related to indexing.

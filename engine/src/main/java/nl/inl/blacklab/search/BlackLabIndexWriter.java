@@ -1,6 +1,7 @@
 package nl.inl.blacklab.search;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.Term;
@@ -32,7 +33,7 @@ public interface BlackLabIndexWriter extends AutoCloseable {
             // indexTemplateFile didn't provide a default formatIdentifier,
             // overwrite it with our provided formatIdentifier
             indexWriter.metadata().setDocumentFormat(formatIdentifier);
-            indexWriter.metadata().save();
+//            indexWriter.metadata().save();
         }
     }
 
@@ -142,4 +143,6 @@ public interface BlackLabIndexWriter extends AutoCloseable {
 
     /** Get the ContentStore with this name. If no such ContentStore exists, the implementation should create it. */
     ContentStore contentStore(Field contentStoreName);
+
+    public Map<String, Object> getUserObjectMap();
 }
