@@ -50,7 +50,8 @@ import nl.inl.util.LuceneUtil;
 import nl.inl.util.TimeUtil;
 
 /**
- * Determines the structure of a BlackLab index.
+ * Implementation of IndexMetadata, which determines the structure of a BlackLab index. 
+ * See {@link IndexMetadata}
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @JsonPropertyOrder({
