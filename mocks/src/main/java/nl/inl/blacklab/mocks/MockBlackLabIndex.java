@@ -256,9 +256,6 @@ public class MockBlackLabIndex implements BlackLabIndex {
     }
 
     @Override
-    public Map<String, Object> getUserObjectMap() { return null; }
-
-    @Override
     public Query getAllRealDocsQuery() {
         return new MatchAllDocsQuery();
     }

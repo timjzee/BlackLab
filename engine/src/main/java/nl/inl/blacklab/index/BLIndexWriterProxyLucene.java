@@ -8,6 +8,8 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Query;
 
+import nl.inl.blacklab.index.BLIndexWriterProxy;
+
 /**
  * Simple proxy for Lucene IndexWriter.
  */

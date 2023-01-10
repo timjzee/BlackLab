@@ -162,9 +162,6 @@ public abstract class BlackLabIndexAbstract implements BlackLabIndexWriter, Blac
     /** Was this index closed? */
     private boolean closed;
 
-    /** Can be anything */
-    private Map<String, Object> userObjectMap = new ConcurrentHashMap<>();
-
     // Constructors
     //---------------------------------------------------------------
 
@@ -775,10 +772,5 @@ public abstract class BlackLabIndexAbstract implements BlackLabIndexWriter, Blac
         // since this function is in writer, we're in write mode.
         // (TODO: split reader and writer implementations, do not have a class that does both!)
         return contentAccessor(field).getContentStore();
-    }
-
-    @Override
-    public Map<String, Object> getUserObjectMap() {
-        return userObjectMap;
     }
 }

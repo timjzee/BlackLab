@@ -143,6 +143,4 @@ public interface BlackLabIndexWriter extends AutoCloseable {
 
     /** Get the ContentStore with this name. If no such ContentStore exists, the implementation should create it. */
     ContentStore contentStore(Field contentStoreName);
-
-    public Map<String, Object> getUserObjectMap();
 }

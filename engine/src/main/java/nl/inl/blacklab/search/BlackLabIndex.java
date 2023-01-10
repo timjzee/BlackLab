@@ -502,6 +502,4 @@ public interface BlackLabIndex extends AutoCloseable {
             return Boolean.parseBoolean(document.get(METADATA_FIELD_CONTENT_VIEWABLE));
         return metadata().contentViewable();
     }
-
-    public Map<String, Object> getUserObjectMap();
 }
