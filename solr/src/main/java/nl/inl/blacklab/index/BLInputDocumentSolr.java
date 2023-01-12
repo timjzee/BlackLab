@@ -44,7 +44,6 @@ public class BLInputDocumentSolr implements BLInputDocument {
 
     @Override
     public void addTextualMetadataField(String name, String value, BLFieldType type) {
-        addField(name, value, type);
         // If a value is too long (more than 32K), just truncate it a bit.
         // This should be very rare and would generally only affect sorting/grouping, if anything.
         value = BLInputDocument.truncateValue(value);

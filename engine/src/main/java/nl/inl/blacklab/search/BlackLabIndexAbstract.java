@@ -8,7 +8,6 @@ import java.text.Collator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -748,7 +747,7 @@ public abstract class BlackLabIndexAbstract implements BlackLabIndexWriter, Blac
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + "(" + indexLocation + ")";
+        return this.getClass().getSimpleName() + "(" + (indexLocation != null ? indexLocation : name()) + ")";
     }
 
     @Override

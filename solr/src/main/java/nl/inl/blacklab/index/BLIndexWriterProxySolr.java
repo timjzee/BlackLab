@@ -7,8 +7,6 @@ import java.util.List;
 
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Query;
-import org.apache.solr.update.AddUpdateCommand;
-import org.apache.solr.update.DeleteUpdateCommand;
 
 import nl.inl.blacklab.search.BlackLabIndexWriter;
 
@@ -20,7 +18,7 @@ public class BLIndexWriterProxySolr implements BLIndexWriterProxy, Closeable {
 //    UpdateRequestProcessor next;
     BlackLabIndexWriter writer;
 
-    List<BLInputDocument> pendingAddDocuments = new ArrayList<>();
+    List<BLInputDocumentSolr> pendingAddDocuments = new ArrayList<>();
 //    List<BLInputDocument> pendingDeleteDocuments = new ArrayList<>();
 
 
@@ -32,7 +30,7 @@ public class BLIndexWriterProxySolr implements BLIndexWriterProxy, Closeable {
     @Override
     synchronized public void addDocument(BLInputDocument document) throws IOException {
 //        ensureInitialized();
-        pendingAddDocuments.add(document);
+        pendingAddDocuments.add((BLInputDocumentSolr) document);
 
 //        AddUpdateCommand cmd = new AddUpdateCommand(null);
 //        cmd.solrDoc = ((BLInputDocumentSolr) document).getDocument();
@@ -66,7 +64,7 @@ public class BLIndexWriterProxySolr implements BLIndexWriterProxy, Closeable {
     public void deleteDocuments(Query q) throws IOException {
 //        ensureInitialized();
 
-        DeleteUpdateCommand cmd = new DeleteUpdateCommand(request);
+//        DeleteUpdateCommand cmd = new DeleteUpdateCommand(request);
 //        next.processDelete(cmd);
     }
 
@@ -79,11 +77,17 @@ public class BLIndexWriterProxySolr implements BLIndexWriterProxy, Closeable {
 //        cmd.overwrite = true;
 //        next.processAdd(cmd);
 //        return -1;
+        pendingAddDocuments.add((BLInputDocumentSolr) document);
+        return -1;
     }
 
     @Override
     public int getNumberOfDocs() {
         // TODO
         return 0;
+    }
+
+    public List<BLInputDocumentSolr> getPendingAddDocuments() {
+        return pendingAddDocuments;
     }
 }
