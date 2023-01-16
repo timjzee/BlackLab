@@ -1,7 +1,6 @@
 package nl.inl.blacklab.index;
 
 import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.document.Field;
 import org.apache.solr.common.SolrInputDocument;
 
 /**
@@ -21,8 +20,10 @@ public class BLInputDocumentSolr implements BLInputDocument {
 
     @Override
     public void addAnnotationField(String name, TokenStream tokenStream, BLFieldType fieldType) {
-        Field f = new Field(name, tokenStream, fieldType.luceneType());
-        document.addField(name, f);
+//        IndexableField f = new SolrInputField("");
+//        f.
+//        Field f = new Field(name, tokenStream, fieldType.luceneType());
+        document.addField(name, tokenStream);
     }
 
     public void addStoredNumericField(String name, int value, boolean addDocValue) {

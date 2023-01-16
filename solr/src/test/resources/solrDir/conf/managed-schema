@@ -79,7 +79,7 @@
         </analyzer>
    </fieldType>
 
-   <fieldType name="annotation" class="solr.StrField"/>
+   <fieldType name="annotation" class="solr.TextField"/>
 
-<field name="pid" type="metadata_pid" storeOffsetsWithPositions="true"/>
+    <field name="pid" type="metadata_pid"/>
 </schema>

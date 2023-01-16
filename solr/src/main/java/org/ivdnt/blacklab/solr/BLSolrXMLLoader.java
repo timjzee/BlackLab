@@ -79,6 +79,9 @@ public class BLSolrXMLLoader extends ContentStreamLoader {
                 cmd.overwrite = true;
                 cmd.setReq(req);
                 processor.processAdd(cmd);
+                // ends up in DirectUpdateHandler2::addDoc0
+                // eventually gets to DefaultIndexingChain::processDocument
+                // fields go to DefaultIndexingChain::processField
             }
 
             IOUtils.closeQuietly(is);
@@ -134,9 +137,9 @@ public class BLSolrXMLLoader extends ContentStreamLoader {
                 .forEach(missingAnnot -> {
                     boolean offsets =
                             missingAnnot.annotation().field().mainAnnotation() == missingAnnot.annotation();
-                    boolean contentstore = false; // I think, since contentstore field is not listed in the metadata
-                    boolean indexed = !contentstore;
-                    boolean tokenized = indexed;
+                    boolean contentstore = false; // I think, since the contentstore field is not listed in the indexmetadata object
+                    boolean indexed = !contentstore; // gotten from BLFieldTypeLucene
+                    boolean tokenized = indexed; // annotations are always tokenized? (TODO doublecheck)
 
                     // see FieldProperties for supported options.
                     Map<String, Object> fieldAttributes = new HashMap<>();
@@ -156,7 +159,7 @@ public class BLSolrXMLLoader extends ContentStreamLoader {
                     fieldAttributes.put("omitPositions", !(indexed || offsets));
                     fieldAttributes.put("storeOffsetsWithPositions", offsets);
                     fieldAttributes.put("docValues", false);
-                    fieldAttributes.put("termPayloads", missingAnnot.annotation().hasForwardIndex());
+                    fieldAttributes.put("termPayloads", missingAnnot.luceneField().contains("starttag")); // FIXME: is correct, but this way of determining is icky
                     fieldAttributes.put("useDocValuesAsStored", false); // no idea what this does
                     fieldAttributes.put("large", false);
                     fieldAttributes.put("uninvertible", false);
