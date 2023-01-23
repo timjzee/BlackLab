@@ -79,7 +79,7 @@
         </analyzer>
    </fieldType>
 
-   <fieldType name="annotation" class="solr.TextField"/>
+   <fieldType name="annotation" class="solr.PreAnalyzedField" parserImpl="org.ivdnt.blacklab.solr.BLSolrPreAnalyzedFieldParser"/>
 
     <field name="pid" type="metadata_pid"/>
 </schema>

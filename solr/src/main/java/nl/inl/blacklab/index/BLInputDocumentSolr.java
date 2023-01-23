@@ -1,7 +1,11 @@
 package nl.inl.blacklab.index;
 
+import java.io.IOException;
+
 import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.document.Field;
 import org.apache.solr.common.SolrInputDocument;
+import org.ivdnt.blacklab.solr.BLSolrPreAnalyzedFieldParser;
 
 /**
  * Class for a BlackLab document being indexed directly into Lucene.
@@ -20,10 +24,13 @@ public class BLInputDocumentSolr implements BLInputDocument {
 
     @Override
     public void addAnnotationField(String name, TokenStream tokenStream, BLFieldType fieldType) {
-//        IndexableField f = new SolrInputField("");
-//        f.
-//        Field f = new Field(name, tokenStream, fieldType.luceneType());
-        document.addField(name, tokenStream);
+        try {
+            // it seems we can't have this happen automatically within SOLR, WE have to provide the serialized value.
+            String v = new BLSolrPreAnalyzedFieldParser().toFormattedString(new Field(name, tokenStream, fieldType.luceneType()));
+            document.addField(name, v);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void addStoredNumericField(String name, int value, boolean addDocValue) {
@@ -56,5 +63,4 @@ public class BLInputDocumentSolr implements BLInputDocument {
     public BLIndexObjectFactory indexObjectFactory() {
         return BLIndexObjectFactoryLucene.INSTANCE;
     }
-
 }
