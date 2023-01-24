@@ -37,7 +37,7 @@ indexLocations:
 
 On the [GitHub releases page](https://github.com/INL/BlackLab/releases/), find the latest stable version (usually at the top) and download the attached file named blacklab-server-VERSION.war. Place this file in Tomcat's `webapps` directory. Tomcat should automatically recognize the file and initialize the application (usually, it will extract it to a subdirectory).
 
-Now go to [https://localhost:8080/blacklab-server/](https://localhost:8080/blacklab-server/) (or substitute the hostname of the server you've installed it on if not running locally) and you should see an XML response from BlackLab.
+Now go to [https://localhost:8080/blacklab-server-VERSION/](https://localhost:8080/blacklab-server/) (or substitute the hostname of the server you've installed it on if not running locally) and you should see an XML response from BlackLab.
 
 *([learn more about BlackLab Server](../server/))*
 
